@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+</head>
+<body>
+        <header>
+            <h1 class="bg-dark navbar navbar-dark sticky-top text-light">Weather Dashboard</h1>
+        </header>
+
+        <main class="container-fluid">
+            <!-- SIDE BAR -->
+            <div class="row">
+                <nav id="sidebarMenu" class="col-md-12 col-lg-3 d-md-block bg-light sidebar collapse">
+                    <div class="sidebar-sticky pt-3">
+                        <!-- SEARCH CITY INPUT -->
+                        <div id="search-city" class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="City" aria-label="Recipient's username" aria-describedby="button-addon2">
+                            <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="button-addon2">Search</button>
+                            </div>
+                        </div>
+
+                    <!-- PREVIOUS CITIES SEARCHED-->
+                    <div id="previous-searches" class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                              <span data-feather="file"></span>
+                              Dallas
+                            </a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" href="#">
+                              <span data-feather="file"></span>
+                              New York
+                            </a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" href="#">
+                              <span data-feather="file"></span>
+                              Atlanta
+                            </a>
+                          </li>
+                    </div>
+                </nav>
+                <!-- SIDE BAR END -->
+
+                <div class="col-md-12 col-lg-7 container">
+                    <!-- CURRENT FORECAST -->
+                    <div id="current-forecast" class="row">
+                        <div class="col-12">
+                            <h2 id="city-name"><span id="date"></span></h2>
+                            <p>Temperature: <span id="temp"></span></p>
+                            <p>Humidity: <span id="humid"></span></p>
+                            <p>Wind Speed: <span id="wind"></span></p>
+                            <p>UV Index: <span id="uv"></span></p>
+                        </div>
+                    </div>
+
+                    <!-- WEEKLY FORECAST -->
+                    <div id="weekly-forecast">
+                        <div class="col-12 d-flex">
+                            <div id="day1" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+                                <div class="card-header"></div>
+                                <div class="card-body">
+                                <h5 class="card-title">Day 1</h5>
+                                <p class="card-text">
+                                    Temp: <span></span><br>
+                                    Humidity: <span></span>
+                                </p>
+                                </div>
+                            </div>
+                            <div id="day2" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+                                <div class="card-header"></div>
+                                <div class="card-body">
+                                <h5 class="card-title">Day 2</h5>
+                                <p class="card-text">
+                                    Temp: <span></span><br>
+                                    Humidity: <span></span>
+                                </p>
+                                </div>
+                            </div>
+                            <div id="day3" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+                                <div class="card-header"></div>
+                                <div class="card-body">
+                                <h5 class="card-title">Day 3</h5>
+                                <p class="card-text">
+                                    Temp: <span></span><br>
+                                    Humidity: <span></span>
+                                </p>
+                                </div>
+                            </div>
+                            <div id="day4" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+                                <div class="card-header"></div>
+                                <div class="card-body">
+                                <h5 class="card-title">Day 4</h5>
+                                <p class="card-text">
+                                    Temp: <span></span><br>
+                                    Humidity: <span></span>
+                                </p>
+                                </div>
+                            </div>
+                            <div id="day5" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+                                <div class="card-header"></div>
+                                <div class="card-body">
+                                <h5 class="card-title">Day 5</h5>
+                                <p class="card-text">
+                                    Temp: <span></span><br>
+                                    Humidity: <span></span>
+                                                                
+                                </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <script src="./assets/js/script.js"
+    </body>
+</html>
