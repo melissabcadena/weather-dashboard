@@ -29,36 +29,7 @@
 
                     <!-- PREVIOUS CITIES SEARCHED-->
                     <div id="previous-searches" class="nav flex-column">
-                        <!-- <li class="nav-item">
-                            <a class="nav-link" href="#">
-                              <span data-feather="file"></span>
-                              
-                            </a>
-                          </li>
-                          <li class="nav-item">
-                            <a class="nav-link" href="#">
-                              <span data-feather="file"></span>
-                            </a>
-                          </li>
-                          <li class="nav-item">
-                            <a class="nav-link" href="#">
-                              <span data-feather="file"></span>
-                            </a>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                  <span data-feather="file"></span>
-                                </a>
-                              </li>
-                              <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                  <span data-feather="file"></span>
-                                </a>
-                              </li>
-                              <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                  <span data-feather="file"></span>
-                                </a>
-                          </li> -->
+                         <!-- previous cities will be dynamically added here-->
                     </div>
                 </nav>
                 <!-- SIDE BAR END -->
@@ -68,10 +39,10 @@
                     <div id="current-forecast" class="row">
                         <div class="col-12">
                             <h2 id="city-name"><span id="date"></span></h2>
-                            <p>Temperature: <span id="temp"></span></p>
-                            <p>Humidity: <span id="humid"></span></p>
-                            <p>Wind Speed: <span id="wind"></span></p>
-                            <p>UV Index: <span id="uv"></span></p>
+                            <p>Temperature: <span class="today" id="temp"></span></p>
+                            <p>Humidity: <span class="today" id="humid"></span></p>
+                            <p>Wind Speed: <span class="today" id="wind"></span></p>
+                            <p>UV Index: <span class="today" id="uv"></span></p>
                         </div>
                     </div>
 
@@ -134,6 +105,7 @@
                 </div>
             </div>
         </main>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
         <script src="./assets/js/script.js"></script>
     </body>
 </html>
