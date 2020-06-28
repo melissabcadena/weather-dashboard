@@ -7,6 +7,8 @@ var todayHumidEl = document.querySelector("#humid");
 var todayWindEl = document.querySelector("#wind");
 var todayUVEl = document.querySelector("#uv");
 
+
+// fetch api call for today's weather
 var getTodaysWeather = function (cityName) {
     // format api url
     var apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&units=imperial&appid=8fc9d3841b8ffcc0fce5fb6a16a654cc"
@@ -35,9 +37,13 @@ var formSubmitHandler = function (event) {
         previousCityListItem.innerHTML="<a class='nav-link' href='#'><span data-feather='file'></span>" + requestedCity + "</a>";
 
         previousSearchesEl.appendChild(previousCityListItem);
+
+        document.querySelector(".all-stats").classList.remove("hide");
         
         // push through to get weather function
         getTodaysWeather(requestedCity);
+        // push through to get five day forecast function
+        getWeeklyWeather(requestedCity);
         cityInputEl.value = "";
     } else {
         alert("Please enter valid city.");
@@ -45,8 +51,6 @@ var formSubmitHandler = function (event) {
 }
 
 var displayTodaysWeather = function (info, city) {
-    console.log(info);
-    console.log(city);
 
     // clear old content
     document.querySelectorAll(".today").textContent="";
@@ -77,11 +81,21 @@ var displayTodaysWeather = function (info, city) {
     console.log(uv);
     todayUVEl.textContent = uv;
     
+    // add background color based on UV index
+    if (uv > 5) {
+        todayUVEl.className = "bg-danger"
+    } else if (uv < 3) {
+        todayUVEl.className = "bg-success"
+    } else {
+        todayUVEl.className = "bg-warning"
+    }
+    
 }
 
 var getUVIndex = function (lon, lat) {
     var apiUrl = "http://api.openweathermap.org/data/2.5/uvi?appid=8fc9d3841b8ffcc0fce5fb6a16a654cc&lat=" + lat +"&lon=" + lon;
-    fetch(apiUrl).then(function(response) {
+    fetch(apiUrl)
+    .then(function(response) {
         if (response.ok) {
             response.json().then(function(data) {
                 var uv = data.value;
@@ -92,6 +106,25 @@ var getUVIndex = function (lon, lat) {
             alert("There was a problem with your request.");
         }
     })
+}
+
+var getWeeklyWeather = function (cityName) {
+    var apiUrl = "http://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&units=imperial&appid=8fc9d3841b8ffcc0fce5fb6a16a654cc"
+
+    fetch(apiUrl)
+    .then(function(response) {
+        if (response.ok) {
+            response.json().then(function(data) {
+                displayWeeklyWeather(cityName, data);
+            })
+        } else {
+            alert("There was a problem with your request.");
+        }
+    })
+}
+
+var displayWeeklyWeather = function () {
+
 }
 
 searchFormEl.addEventListener("click", formSubmitHandler);
