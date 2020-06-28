@@ -7,7 +7,6 @@ var todayHumidEl = document.querySelector("#humid");
 var todayWindEl = document.querySelector("#wind");
 var todayUVEl = document.querySelector("#uv");
 
-
 // fetch api call for today's weather
 var getTodaysWeather = function (cityName) {
     // format api url
@@ -21,6 +20,7 @@ var getTodaysWeather = function (cityName) {
                 displayTodaysWeather(data, cityName);
                 // get UV Index for today
                 var uv = getUVIndex(data.coord.lon, data.coord.lat);
+
                 getWeeklyWeather(data.coord.lon, data.coord.lat);
             })
         } else {
@@ -77,18 +77,6 @@ var displayTodaysWeather = function (info, city) {
     var windSpeed = info.wind.speed;
     var fixedWindSpeed = windSpeed.toFixed(1);
     todayWindEl.textContent = fixedWindSpeed + " MPH";
-
-    
-    
-    // add background color based on UV index
-    if (uv > 5 ) {
-        todayUVEl.className = "bg-danger p-2 rounded"
-    } else if (uv < 3) {
-        todayUVEl.className = "bg-success p-2 rounded"
-    } else {
-        todayUVEl.className = "bg-warning p-2 rounded"
-    }
-    
 }
 
 var getUVIndex = function (lon, lat) {
@@ -98,8 +86,15 @@ var getUVIndex = function (lon, lat) {
         if (response.ok) {
             response.json().then(function(data) {
                 var uv = data.value;
-                console.log(uv);
                 todayUVEl.textContent = uv;
+                // add background color based on UV index
+                if (uv > 5 ) {
+                    todayUVEl.className = "bg-danger p-2 rounded"
+                } else if (uv < 3) {
+                    todayUVEl.className = "bg-success p-2 rounded"
+                } else {
+                    todayUVEl.className = "bg-warning p-2 rounded"
+                }
                 return uv;
             })
         } else {
@@ -133,10 +128,8 @@ var displayWeeklyWeather = function (info) {
         // get date
         var date = moment().add(i, 'd').format('L');
 
-        // add icon
+        // add new icon
         var icon = info.daily[i].weather[0].icon
-        console.log(icon);
-
 
         // get temp and humidity
         var temp = info.daily[i].temp.day;
@@ -148,6 +141,7 @@ var displayWeeklyWeather = function (info) {
         
         var weatherIconEl = document.createElement("img")
         weatherIconEl.setAttribute("src", "http://openweathermap.org/img/w/" + icon + ".png")
+        document.querySelector(".day-" + i + "-icon").innerHTML="";
         document.querySelector(".day-" + i + "-icon").appendChild(weatherIconEl);
 
         document.querySelector(".temp-day-" + [i]).innerHTML = fixedTemp + "&deg; F";
