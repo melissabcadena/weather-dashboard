@@ -19,6 +19,9 @@ var getTodaysWeather = function (cityName) {
         if (response.ok) {
             response.json().then(function(data) {
                 displayTodaysWeather(data, cityName);
+                // get UV Index for today
+                var uv = getUVIndex(data.coord.lon, data.coord.lat);
+                getWeeklyWeather(data.coord.lon, data.coord.lat);
             })
         } else {
             alert("Error: " + response.statusText);
@@ -43,7 +46,6 @@ var formSubmitHandler = function (event) {
         // push through to get weather function
         getTodaysWeather(requestedCity);
         // push through to get five day forecast function
-        getWeeklyWeather(requestedCity);
         cityInputEl.value = "";
     } else {
         alert("Please enter valid city.");
@@ -59,8 +61,8 @@ var displayTodaysWeather = function (info, city) {
     cityNameEl.textContent = city + " (" + moment().format("L") + ") ";
 
     // create weather icon
-    var weatherIconEl = document.createElement("i")
-    weatherIconEl.className = "owi owi-" + info.weather[0].icon
+    var weatherIconEl = document.createElement("img")
+    weatherIconEl.setAttribute("src", "http://openweathermap.org/img/w/" + info.weather[0].icon + ".png")
     cityNameEl.appendChild(weatherIconEl);
 
     // input info from data into webpage
@@ -76,18 +78,15 @@ var displayTodaysWeather = function (info, city) {
     var fixedWindSpeed = windSpeed.toFixed(1);
     todayWindEl.textContent = fixedWindSpeed + " MPH";
 
-    // get UV Index for today
-    var uv = getUVIndex(info.coord.lon, info.coord.lat);
-    console.log(uv);
-    todayUVEl.textContent = uv;
+    
     
     // add background color based on UV index
-    if (uv > 5) {
-        todayUVEl.className = "bg-danger"
+    if (uv > 5 ) {
+        todayUVEl.className = "bg-danger p-2 rounded"
     } else if (uv < 3) {
-        todayUVEl.className = "bg-success"
+        todayUVEl.className = "bg-success p-2 rounded"
     } else {
-        todayUVEl.className = "bg-warning"
+        todayUVEl.className = "bg-warning p-2 rounded"
     }
     
 }
@@ -100,6 +99,7 @@ var getUVIndex = function (lon, lat) {
             response.json().then(function(data) {
                 var uv = data.value;
                 console.log(uv);
+                todayUVEl.textContent = uv;
                 return uv;
             })
         } else {
@@ -108,14 +108,14 @@ var getUVIndex = function (lon, lat) {
     })
 }
 
-var getWeeklyWeather = function (cityName) {
-    var apiUrl = "http://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&units=imperial&appid=8fc9d3841b8ffcc0fce5fb6a16a654cc"
+var getWeeklyWeather = function (lon, lat) {
+    var apiUrl = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&units=imperial&appid=8fc9d3841b8ffcc0fce5fb6a16a654cc"
 
     fetch(apiUrl)
     .then(function(response) {
         if (response.ok) {
             response.json().then(function(data) {
-                displayWeeklyWeather(cityName, data);
+                displayWeeklyWeather(data);
             })
         } else {
             alert("There was a problem with your request.");
@@ -123,8 +123,38 @@ var getWeeklyWeather = function (cityName) {
     })
 }
 
-var displayWeeklyWeather = function () {
+var displayWeeklyWeather = function (info) {
+    // clear out any previous content
+    document.querySelectorAll(".card-header").textContent="";
+    document.querySelectorAll(".card-text span").textContent="";
 
+    // loop through data to get temp and humidity for each date
+    for (var i=1; i < 6; i++) {
+        // get date
+        var date = moment().add(i, 'd').format('L');
+
+        // add icon
+        var icon = info.daily[i].weather[0].icon
+        console.log(icon);
+
+
+        // get temp and humidity
+        var temp = info.daily[i].temp.day;
+        var fixedTemp = temp.toFixed(1);
+        var humidity = info.daily[i].humidity;
+
+        // display info
+        document.querySelector(".day-" + i).textContent = date;
+        
+        var weatherIconEl = document.createElement("img")
+        weatherIconEl.setAttribute("src", "http://openweathermap.org/img/w/" + icon + ".png")
+        document.querySelector(".day-" + i + "-icon").appendChild(weatherIconEl);
+
+        document.querySelector(".temp-day-" + [i]).innerHTML = fixedTemp + "&deg; F";
+        document.querySelector(".humid-day-" + [i]).textContent = humidity + "%";
+    }
 }
+
+
 
 searchFormEl.addEventListener("click", formSubmitHandler);
