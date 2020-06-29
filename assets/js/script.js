@@ -10,31 +10,11 @@ var todayUVEl = document.querySelector("#uv");
 // create array to store cities that have been searched
 var previouslySearchedCities = [];
 
-// fetch api call for today's weather
-var getWeather = function (cityName) {
-    // format api url
-    var apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&units=imperial&appid=8fc9d3841b8ffcc0fce5fb6a16a654cc"
-
-    // make request to url
-    fetch(apiUrl)
-    .then(function(response) {
-        if (response.ok) {
-            response.json().then(function(data) {
-                displayTodaysWeather(data, cityName);
-                // get UV Index for today
-                getUVIndex(data.coord.lon, data.coord.lat);
-
-                getWeeklyWeather(data.coord.lon, data.coord.lat);
-            })
-        } else {
-            alert("Error: " + response.statusText);
-        }
-    })
-}
-
+// once city is searched, perform this function
 var formSubmitHandler = function (event) {
     event.preventDefault();
     
+    // get the city that was searched
     var requestedCity = cityInputEl.value.trim();
     if (requestedCity) {
         // add city to previously searched cities
@@ -44,6 +24,7 @@ var formSubmitHandler = function (event) {
 
         previousSearchesEl.appendChild(previousCityListItem); 
 
+        // reveal hidden elements on page
         document.querySelector(".all-stats").classList.remove("hide");
 
         // add city to previously Searched Cities Array
@@ -54,42 +35,56 @@ var formSubmitHandler = function (event) {
         
         // push through to get weather function
         getWeather(requestedCity);
-        // push through to get five day forecast function
+        // clear search field
         cityInputEl.value = "";
     } else {
+        // if no city or misspelled city is searched
         alert("Please enter valid city.");
     }
 }
 
-var previousCityLoad = function (event) {
+// fetch api call for today's weather
+var getWeather = function (cityName) {
+    // format api url
+    var apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&units=imperial&appid=8fc9d3841b8ffcc0fce5fb6a16a654cc"
 
-    // remove hide class if it is still there
-    document.querySelector(".all-stats").classList.remove("hide");
-
-    
-    var city = event.target.textContent;
-    getWeather(city);
+    // make request to url
+    fetch(apiUrl)
+    .then(function(response) {
+        if (response.ok) {
+            response.json().then(function(data) {
+                // send data to function that will display elements on page
+                displayTodaysWeather(data, cityName);
+                // get UV Index for today
+                getUVIndex(data.coord.lon, data.coord.lat);
+                // send data to function that will display weekly weather to page
+                getWeeklyWeather(data.coord.lon, data.coord.lat);
+            })
+        } else {
+            // if api unsuccessful
+            alert("Error: " + response.statusText);
+        }
+    })
 }
 
 var displayTodaysWeather = function (info, city) {
-
-    // clear old content
+    // clear out any old content
     document.querySelectorAll(".today").textContent="";
 
     // add city to top of page
     cityNameEl.textContent = city + " (" + moment().format("L") + ") ";
 
-    // create weather icon
+    // create weather icon & add to page
     var weatherIconEl = document.createElement("img")
     weatherIconEl.setAttribute("src", "http://openweathermap.org/img/w/" + info.weather[0].icon + ".png")
     cityNameEl.appendChild(weatherIconEl);
 
-    // input info from data into webpage
     // format temp 
     var temp = info.main.temp
     var fixedTemp = temp.toFixed(1);
     todayTempEl.innerHTML = fixedTemp + "&deg; F";
 
+    // get humidity
     todayHumidEl.textContent = info.main.humidity + "%";
     
     // format wind speed
@@ -99,11 +94,13 @@ var displayTodaysWeather = function (info, city) {
 }
 
 var getUVIndex = function (lon, lat) {
+    // new fetch call to get uv index for the day
     var apiUrl = "http://api.openweathermap.org/data/2.5/uvi?appid=8fc9d3841b8ffcc0fce5fb6a16a654cc&lat=" + lat +"&lon=" + lon;
     fetch(apiUrl)
     .then(function(response) {
         if (response.ok) {
             response.json().then(function(data) {
+                // save uv value to variable and add to page
                 var uv = data.value;
                 todayUVEl.textContent = uv;
                 // add background color based on UV index
@@ -117,21 +114,26 @@ var getUVIndex = function (lon, lat) {
                 return uv;
             })
         } else {
+            // if api unsuccessful
             alert("There was a problem with your request.");
         }
     })
 }
 
 var getWeeklyWeather = function (lon, lat) {
+
+    // new fetch call to get weekly weather data
     var apiUrl = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&units=imperial&appid=8fc9d3841b8ffcc0fce5fb6a16a654cc"
 
     fetch(apiUrl)
     .then(function(response) {
         if (response.ok) {
             response.json().then(function(data) {
+                // send data to function that will display info to page
                 displayWeeklyWeather(data);
             })
         } else {
+            // if api unsuccessful
             alert("There was a problem with your request.");
         }
     })
@@ -142,12 +144,12 @@ var displayWeeklyWeather = function (info) {
     document.querySelectorAll(".card-header").textContent="";
     document.querySelectorAll(".card-text span").textContent="";
 
-    // loop through data to get temp and humidity for each date
+    // loop through data to get temp and humidity for each date, start at 1 to skip today's date, end at 5 to only get 5 days
     for (var i=1; i < 6; i++) {
         // get date
         var date = moment().add(i, 'd').format('L');
 
-        // add new icon
+        // add weather icon
         var icon = info.daily[i].weather[0].icon
 
         // get temp and humidity
@@ -155,7 +157,7 @@ var displayWeeklyWeather = function (info) {
         var fixedTemp = temp.toFixed(1);
         var humidity = info.daily[i].humidity;
 
-        // display info
+        // display all info
         document.querySelector(".day-" + i).textContent = date;
         
         var weatherIconEl = document.createElement("img")
@@ -168,11 +170,24 @@ var displayWeeklyWeather = function (info) {
     }
 }
 
+// if previously searched city is clicked, run this function
+var previousCityLoad = function (event) {
+    // remove hide class if it is still there
+    document.querySelector(".all-stats").classList.remove("hide");
+    // get city name
+    var city = event.target.textContent;
+    // send to first function
+    getWeather(city);
+}
+
+// load previously searched cities to page
 var loadLocalStorage = function () {
+    // get the previously saved cities
     var previousCities = JSON.parse(localStorage.getItem('previousCities'));
-    console.log(previousCities);
+    // if no previous cities, add nothing
     if (previousCities === null) {
         return;
+        // if cities have previously been searched, loop through each one add li element to page
     } else {
         for (var i = 0; i < previousCities.length; i++) {
             // add city to previously searched cities
@@ -185,6 +200,7 @@ var loadLocalStorage = function () {
     }
 }
 
+// to run on page load
 loadLocalStorage();
 
 searchFormEl.addEventListener("click", formSubmitHandler);
