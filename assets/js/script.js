@@ -76,7 +76,7 @@ var displayTodaysWeather = function (info, city) {
 
     // create weather icon & add to page
     var weatherIconEl = document.createElement("img")
-    weatherIconEl.setAttribute("src", "http://openweathermap.org/img/w/" + info.weather[0].icon + ".png")
+    weatherIconEl.setAttribute("src", "https://openweathermap.org/img/w/" + info.weather[0].icon + ".png")
     cityNameEl.appendChild(weatherIconEl);
 
     // format temp 
@@ -161,7 +161,7 @@ var displayWeeklyWeather = function (info) {
         document.querySelector(".day-" + i).textContent = date;
         
         var weatherIconEl = document.createElement("img")
-        weatherIconEl.setAttribute("src", "http://openweathermap.org/img/w/" + icon + ".png")
+        weatherIconEl.setAttribute("src", "https://openweathermap.org/img/w/" + icon + ".png")
         document.querySelector(".day-" + i + "-icon").innerHTML="";
         document.querySelector(".day-" + i + "-icon").appendChild(weatherIconEl);
 
