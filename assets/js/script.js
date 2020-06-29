@@ -7,6 +7,9 @@ var todayHumidEl = document.querySelector("#humid");
 var todayWindEl = document.querySelector("#wind");
 var todayUVEl = document.querySelector("#uv");
 
+// create array to store cities that have been searched
+var previouslySearchedCities = [];
+
 // fetch api call for today's weather
 var getWeather = function (cityName) {
     // format api url
@@ -37,11 +40,17 @@ var formSubmitHandler = function (event) {
         // add city to previously searched cities
         previousCityListItem = document.createElement("li");
         previousCityListItem.className = "nav-item";
-        previousCityListItem.innerHTML="<a class='nav-link' href='#'><span data-feather='file'></span>" + requestedCity + "</a>";
+        previousCityListItem.innerHTML="<a class='nav-link border' href='#'><span data-feather='file'></span>" + requestedCity + "</a>";
 
-        previousSearchesEl.appendChild(previousCityListItem);
+        previousSearchesEl.appendChild(previousCityListItem); 
 
         document.querySelector(".all-stats").classList.remove("hide");
+
+        // add city to previously Searched Cities Array
+        previouslySearchedCities.push(requestedCity);
+
+        // save to localStorage
+        localStorage.setItem("previousCities", JSON.stringify(previouslySearchedCities));
         
         // push through to get weather function
         getWeather(requestedCity);
@@ -53,6 +62,11 @@ var formSubmitHandler = function (event) {
 }
 
 var previousCityLoad = function (event) {
+
+    // remove hide class if it is still there
+    document.querySelector(".all-stats").classList.remove("hide");
+
+    
     var city = event.target.textContent;
     getWeather(city);
 }
@@ -153,6 +167,25 @@ var displayWeeklyWeather = function (info) {
         document.querySelector(".humid-day-" + [i]).textContent = humidity + "%";
     }
 }
+
+var loadLocalStorage = function () {
+    var previousCities = JSON.parse(localStorage.getItem('previousCities'));
+    console.log(previousCities);
+    if (previousCities === null) {
+        return;
+    } else {
+        for (var i = 0; i < previousCities.length; i++) {
+            // add city to previously searched cities
+        previousCityListItem = document.createElement("li");
+        previousCityListItem.className = "nav-item";
+        previousCityListItem.innerHTML="<a class='nav-link border' href='#'><span data-feather='file'></span>" + previousCities[i] + "</a>";
+
+        previousSearchesEl.appendChild(previousCityListItem); 
+        }
+    }
+}
+
+loadLocalStorage();
 
 searchFormEl.addEventListener("click", formSubmitHandler);
 previousSearchesEl.addEventListener("click", previousCityLoad);
