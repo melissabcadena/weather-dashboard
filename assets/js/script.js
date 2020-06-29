@@ -95,7 +95,7 @@ var displayTodaysWeather = function (info, city) {
 
 var getUVIndex = function (lon, lat) {
     // new fetch call to get uv index for the day
-    var apiUrl = "http://api.openweathermap.org/data/2.5/uvi?appid=8fc9d3841b8ffcc0fce5fb6a16a654cc&lat=" + lat +"&lon=" + lon;
+    var apiUrl = "https://api.openweathermap.org/data/2.5/uvi?appid=8fc9d3841b8ffcc0fce5fb6a16a654cc&lat=" + lat +"&lon=" + lon;
     fetch(apiUrl)
     .then(function(response) {
         if (response.ok) {
