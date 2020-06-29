@@ -16,7 +16,7 @@ Each city searched will be saved to the page, so if the user would like to quick
 * 3rd Party API Used - https://openweathermap.org/api
 
 ## Screenshot of Application
-<img src= "./images/application-screenshot.png">
+<img src= "./assets/images/application-screenshot.png">
 
 ## Deployed Website
 https://melissabcadena.github.io/weather-dashboard/
