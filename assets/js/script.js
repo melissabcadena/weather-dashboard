@@ -8,7 +8,7 @@ var todayWindEl = document.querySelector("#wind");
 var todayUVEl = document.querySelector("#uv");
 
 // fetch api call for today's weather
-var getTodaysWeather = function (cityName) {
+var getWeather = function (cityName) {
     // format api url
     var apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&units=imperial&appid=8fc9d3841b8ffcc0fce5fb6a16a654cc"
 
@@ -19,7 +19,7 @@ var getTodaysWeather = function (cityName) {
             response.json().then(function(data) {
                 displayTodaysWeather(data, cityName);
                 // get UV Index for today
-                var uv = getUVIndex(data.coord.lon, data.coord.lat);
+                getUVIndex(data.coord.lon, data.coord.lat);
 
                 getWeeklyWeather(data.coord.lon, data.coord.lat);
             })
@@ -35,7 +35,7 @@ var formSubmitHandler = function (event) {
     var requestedCity = cityInputEl.value.trim();
     if (requestedCity) {
         // add city to previously searched cities
-        var previousCityListItem = document.createElement("li");
+        previousCityListItem = document.createElement("li");
         previousCityListItem.className = "nav-item";
         previousCityListItem.innerHTML="<a class='nav-link' href='#'><span data-feather='file'></span>" + requestedCity + "</a>";
 
@@ -44,12 +44,17 @@ var formSubmitHandler = function (event) {
         document.querySelector(".all-stats").classList.remove("hide");
         
         // push through to get weather function
-        getTodaysWeather(requestedCity);
+        getWeather(requestedCity);
         // push through to get five day forecast function
         cityInputEl.value = "";
     } else {
         alert("Please enter valid city.");
     }
+}
+
+var previousCityLoad = function (event) {
+    var city = event.target.textContent;
+    getWeather(city);
 }
 
 var displayTodaysWeather = function (info, city) {
@@ -149,6 +154,5 @@ var displayWeeklyWeather = function (info) {
     }
 }
 
-
-
 searchFormEl.addEventListener("click", formSubmitHandler);
+previousSearchesEl.addEventListener("click", previousCityLoad);
